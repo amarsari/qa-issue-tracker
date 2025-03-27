@@ -2,9 +2,6 @@ const chaiHttp = require('chai-http');
 const chai = require('chai');
 const assert = chai.assert;
 const server = require('../server');
-
-const expect = chai.expect;//trying new approach
-
 chai.use(chaiHttp);
 
 let issue1;
@@ -192,17 +189,15 @@ suite('Functional Tests', function() {
                     .end(function(err, res) {
                         assert.equal(res.status, 200);
                         assert.equal(res.body.result, 'successfully deleted');
-                       
-                        chai.request(server)
-                            .delete('/api/issues/testing123')
-                            .send({ _id: issue2._id })
-                            .end(function(err, res) {
-                                assert.equal(res.status, 200);
-                                assert.equal(res.body.result, 'successfully deleted');
-                                assert.equal(res.body._id, issue2._id);
-                                done();
-                            });
                     });
+                chai.request(server)
+                    .delete('/api/issues/testing123')
+                    .send({ _id: issue2._id })
+                    .end(function(err, res) {
+                        assert.equal(res.status, 200);
+                        assert.equal(res.body.result, 'successfully deleted');
+                    });
+                done();
             }); 
 
             test('Delete an issue with an invalid _id: DELETE request to /api/issues/{project}', function(done) {

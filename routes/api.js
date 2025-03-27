@@ -1,5 +1,7 @@
 'use strict';
 
+const { Issue } = require('../models');
+
 const IssueModel = require('../models').Issue;
 const ProjectModel = require('../models').Project;
 
@@ -100,27 +102,25 @@ module.exports = function (app) {
     })
     
     .delete(async (req, res) => {
-      let projectName = req.params.project;
-      const { _id } = req.body;
-      if(!_id) {
+      let project = req.params.project;
+      
+      if(!req.body._id) {
         res.json({ error: 'missing _id' });
         return;
-      }
-      
-      try {
-        const projectModel = await ProjectModel.findOne({ name: projectName });
-        if(!projectModel) {
-          throw new Error('project not found');
-        }
-       const result = await IssueModel.deleteOne({ _id: _id, projectId: projectModel._id });
-       
-        if(!result) {
-          throw new Error('issue not found');
-        }
+      } else {
+        try {
+          let foundIssue = await IssueModel.findById(req.body._id)
 
-        res.json({ result: 'successfully deleted', _id: _id });
-      } catch(err) {
-        res.json({ error: 'could not delete', _id: _id });
+            console.log("DELETE id found: "+foundIssue.issue_title)
+            
+            await IssueModel.findOneAndDelete({ _id: req.body._id, project: project })
+
+            console.log("DELETE successful")
+            res.json({ result: "successfully deleted", '_id': req.body._id })
+            
+        } catch (err) {
+          res.json({ error: 'could not delete', '_id': req.body._id });
+        } 
       }
     
     });
