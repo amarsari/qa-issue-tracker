@@ -111,11 +111,11 @@ module.exports = function (app) {
         try {
           let foundIssue = await IssueModel.findById(req.body._id)
 
-            console.log("DELETE id found: "+foundIssue.issue_title)
+            
             
             await IssueModel.findOneAndDelete({ _id: req.body._id, project: project })
 
-            console.log("DELETE successful")
+           
             res.json({ result: "successfully deleted", '_id': req.body._id })
             
         } catch (err) {
