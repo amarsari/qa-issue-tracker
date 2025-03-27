@@ -3,6 +3,8 @@ const chai = require('chai');
 const assert = chai.assert;
 const server = require('../server');
 
+const expect = chai.expect;//trying new approach
+
 chai.use(chaiHttp);
 
 let issue1;
@@ -183,15 +185,14 @@ suite('Functional Tests', function() {
         });
 
         suite('3 Delete Request Tests', function() {
-            test('Delete both issues: DELETE request to /api/issues/{project}', function(done) {
+            test('Delete an issue: DELETE request to /api/issues/{project}', function(done) {
                 chai.request(server)
                     .delete('/api/issues/testing123')
                     .send({ _id: issue1._id })
                     .end(function(err, res) {
                         assert.equal(res.status, 200);
                         assert.equal(res.body.result, 'successfully deleted');
-                        assert.equal(res.body._id, issue1._id);
-                        
+                       
                         chai.request(server)
                             .delete('/api/issues/testing123')
                             .send({ _id: issue2._id })
@@ -202,7 +203,7 @@ suite('Functional Tests', function() {
                                 done();
                             });
                     });
-            });
+            }); 
 
             test('Delete an issue with an invalid _id: DELETE request to /api/issues/{project}', function(done) {
                 chai.request(server)

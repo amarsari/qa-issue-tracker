@@ -106,17 +106,22 @@ module.exports = function (app) {
         res.json({ error: 'missing _id' });
         return;
       }
+      
       try {
         const projectModel = await ProjectModel.findOne({ name: projectName });
         if(!projectModel) {
           throw new Error('project not found');
         }
-        const result = await IssueModel.deleteOne({ _id: _id, projectId: projectModel._id });
-        
-        req.json({ result: 'successfully deleted', _id: _id });
+       const result = await IssueModel.deleteOne({ _id: _id, projectId: projectModel._id });
+       
+        if(!result) {
+          throw new Error('issue not found');
+        }
+
+        res.json({ result: 'successfully deleted', _id: _id });
       } catch(err) {
         res.json({ error: 'could not delete', _id: _id });
       }
-    });
     
+    });
 };
